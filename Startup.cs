@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using BooksCatalogueAPI.Models;
 
 namespace BooksCatalogueAPI
 {
@@ -28,6 +28,7 @@ namespace BooksCatalogueAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<AzureStorageConfig>(Configuration.GetSection("AzureStorageConfig"));
             services.AddDbContext<MyDatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
         }
 
