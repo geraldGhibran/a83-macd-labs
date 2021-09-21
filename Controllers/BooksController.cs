@@ -37,7 +37,7 @@ namespace BooksCatalogueAPI.Controllers
         {
             return await _context.Book
                 .Include(b => b.Reviews)
-                .AsNoTracking()
+                .AsNoTracking().OrderByDescending(b => b.Id)
                 .ToListAsync();
         }
 
