@@ -135,7 +135,7 @@ namespace BooksCatalogue.Controllers
         // POST: Books/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Synopsis,ReleaseYear, CoverURL")] Book book)
         {
@@ -144,9 +144,8 @@ namespace BooksCatalogue.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                var httpContent = new[] {
+
+            var httpContent = new[] {
                     new KeyValuePair<string, string>("id", book.Id.ToString()),
                     new KeyValuePair<string, string>("title", book.Title),
                     new KeyValuePair<string, string>("author", book.Author),
@@ -154,23 +153,23 @@ namespace BooksCatalogue.Controllers
                     new KeyValuePair<string, string>("releaseYear", book.ReleaseYear.ToString())
                 };
 
-                HttpContent content = new FormUrlEncodedContent(httpContent);
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, apiEndpoint + id);
-                request.Content = content;
+            HttpContent content = new FormUrlEncodedContent(httpContent);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, apiEndpoint + id);
+            request.Content = content;
 
-                HttpResponseMessage response = await _client.SendAsync(request);
+            HttpResponseMessage response = await _client.SendAsync(request);
 
-                switch (response.StatusCode)
-                {
-                    case HttpStatusCode.OK:
-                    case HttpStatusCode.NoContent:
-                    case HttpStatusCode.Created:
-                        return RedirectToAction(nameof(Index));
-                    default:
-                        return ErrorAction("Error. Status code = " + response.StatusCode);
-                }
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                case HttpStatusCode.NoContent:
+                case HttpStatusCode.Created:
+                    return RedirectToAction(nameof(Index));
+                default:
+                    return ErrorAction("Error. Status code = " + response.StatusCode);
             }
-            return View(book);
+
+            // return View(book);
         }
 
         // GET: Books/Delete/5
