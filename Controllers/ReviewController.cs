@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BooksCatalogueAPI.Data;
 using BooksCatalogueAPI.Models;
+using System.IO;
+using BooksCatalogueAPI.Helpers;
+using Microsoft.Extensions.Options;
+
 
 namespace BooksCatalogueAPI.Controllers
 {
@@ -16,9 +20,12 @@ namespace BooksCatalogueAPI.Controllers
     {
         private readonly MyDatabaseContext _context;
 
-        public ReviewController(MyDatabaseContext context)
+        private readonly AzureStorageConfig storageConfig = null;
+
+        public ReviewController(MyDatabaseContext context, IOptions<AzureStorageConfig> config)
         {
             _context = context;
+            storageConfig = config.Value;
         }
 
         // GET: api/Review
@@ -46,7 +53,7 @@ namespace BooksCatalogueAPI.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutReview(int id, [FromForm]Review review)
+        public async Task<IActionResult> PutReview(int id, [FromForm] Review review)
         {
             if (id != review.Id)
             {
@@ -78,9 +85,17 @@ namespace BooksCatalogueAPI.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Review>> PostReview([FromForm]Review review)
+        public async Task<ActionResult<Review>> PostReview([FromForm] Review review)
         {
-            _context.Review.Add(review);
+            var newReview = new Review
+            {
+                Id = review.Id,
+                BookId = review.BookId,
+                ReviewerName = review.ReviewerName,
+                Comment = review.Comment,
+                Rating = review.Rating,
+            };
+            _context.Review.Add(newReview);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetReview", new { id = review.Id }, review);
