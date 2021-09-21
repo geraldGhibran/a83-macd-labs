@@ -53,5 +53,5 @@ jobs:
       with:
         app-name: 'cataloggeraldapi'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_26d940163433472392890e7700c4a6e2 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_6f7ef50eef70495e84a36bb739a4ea79 }}
         package: .
